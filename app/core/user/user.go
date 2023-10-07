@@ -1,56 +1,17 @@
 package user
 
 import (
+	"errors"
+	"reflect"
 	"time"
 )
-
-type createUserDTO struct {
-	FirstName string   `json:"firstName"`
-	LastName  string   `json:"lastName"`
-	Email     string   `json:"email"`
-	Password  string   `json:"password"`
-	Role      userRole `json:"role"`
-	Image     string   `json:"image"`
-}
-
-type editUserDTO struct {
-	FirstName *string   `json:"firstName"`
-	LastName  *string   `json:"lastName"`
-	Email     *string   `json:"email"`
-	Password  *string   `json:"password"`
-	Role      *userRole `json:"role"`
-	Image     *string   `json:"image"`
-}
-
-type User struct {
-	//uuid        uuid.UUID
-	ID        int
-	FirstName string    `json:"firstName"`
-	LastName  string    `json:"lastName"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	Role      userRole  `json:"role"`
-	Image     string    `json:"image"`
-	UpdatedAt time.Time `json:"updateddAt"`
-	CreatedAt time.Time `json:"createdAt"`
-}
-
-// NewUser creates a new User instance with a randomly generated UUID.
-func NewUser(User) *User {
-	return &User{
-		ID:        id,
-		FirstName: firstName,
-		LastName:  lastName,
-		Email:     email,
-	}
-}
 
 func (u *User) GetUserName() string {
 	return u.FirstName + " " + u.LastName
 }
 
 // CreateUser creates a new user and returns the user instance.
-func CreateUser(u *createUserDTO) *User {
+func CreateUser(u *CreateUserDTO) *User {
 
 	user := User{
 		ID:        1,
@@ -69,7 +30,25 @@ func CreateUser(u *createUserDTO) *User {
 func GetUser(userID int) *User {
 	// Simulate fetching user data from MongoDB or storage.
 	// Replace this with your actual data retrieval logic.
-	return NewUser("John", "Doe", "john@example.com")
+	u := User{
+		ID:        1,
+		FirstName: "John",
+		LastName:  "Doe",
+		Email:     "john.doe@example.com",
+		Password:  "mypassword",
+		Role:      ADMINISTRATOR,
+		Image:     "profile.jpg",
+		UpdatedAt: time.Now(),
+		CreatedAt: time.Now(),
+	}
+	return &u
+}
+
+func GetUserByName(name string) (bool, error) {
+	if reflect.TypeOf(name).Kind() == reflect.String {
+		return false, errors.New("Name must be a string")
+	}
+	return false, nil
 }
 
 // ModifyUser updates the user's information.

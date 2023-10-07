@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  #  web:
+  #    container_name: 'web'
+  #    image: 'nginx:latest'
+  #    ports:
+  #      - '80:80'
+  #    volumes:
+  #      - ./nginx/dev.conf.d:/etc/nginx/conf.d
+  #    depends_on:
+  #      - 'api'
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis/redis-logs:/var/log/redis   # Map the logs directory
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    container_name: 00mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=00cms
+      - MONGO_INITDB_ROOT_PASSWORD=00secret
+
+  golang-app:
+    build:
+      context: .
+      dockerfile: /app/dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app:/app  # Map the entire app directory
+    depends_on:
+      - redis
+      - mongodb
